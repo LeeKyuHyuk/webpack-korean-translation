@@ -93,3 +93,59 @@ module.exports = {
 > "*.txt파일 중 `require()` 또는 `import` 문을 만나면 Bundles에 추가하기 전에 `raw-loader`를 사용하여 변환하라는 명령을 내려!"
 
 > webpack Configuration에서 규칙을 정의할 때 `rules`가 아니라 `module.rules` 아래에 규칙을 정의한다는 점을 기억하는 것이 중요합니다. 물론, 잘못된 설정을 했을 경우에는 webpack이 잘못되었다고 경고합니다.
+
+> 정규식을 사용하여 파일을 일치시킬 때 `/\.txt$/`는 `'/\.txt$/'`또는 `"/\.txt$/"`와 동일하지 않습니다. 전자는 webpack에 '.txt'로 끝나는 모든 파일과 일치하도록 지시하고 후자는 webpack에 절대 경로 '.txt'를 가진 단일 파일과 일치하도록 지시합니다.
+
+[로더](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/concepts/loaders.md) 섹션에서 자세한 정보와 추가 설정을 확인할 수 있습니다.
+
+## Plugins
+
+로더는 특정 유형의 모듈을 변환하는 데 사용되지만 플러그인을 활용하여 번들 최적화, 리소스 관리 및 환경 변수 주입과 같은 광범위한 작업을 수행할 수 있습니다.
+
+> [플러그인 인터페이스](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/api/plugins.md)와 이를 사용하여 webpack의 기능을 확장하는 방법을 읽어보세요.
+
+플러그인을 사용하려면 `require()`를 사용하여 `plugins` 배열에 추가해야 합니다. 대부분의 플러그인은 옵션을 통해 사용자 정의할 수 있습니다. 다른 목적을 위해 구성에서 플러그인을 여러 번 사용할 수 있으므로 `new` 연산자로 호출하여 플러그인의 인스턴스를 만들어야 합니다.
+
+**webpack.config.js**
+
+```javascript
+const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
+const webpack = require('webpack'); //to access built-in plugins
+
+module.exports = {
+  module: {
+    rules: [
+      { test: /\.txt$/, use: 'raw-loader' }
+    ]
+  },
+  plugins: [
+    new HtmlWebpackPlugin({template: './src/index.html'})
+  ]
+};
+```
+
+위의 예에서 `html-webpack-plugin`은 생성 된 모든 번들을 자동으로 삽입하여 애플리케이션에 대한 HTML 파일을 생성합니다.
+
+> webpack은 다양한 플러그인을 제공합니다! [플러그인 목록](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/plugins/README.md)을 확인하세요.
+
+webpack에서 플러그인을 사용하는 것은 간단합니다. 그러나 추가로 살펴볼 다양한 사용 사례가 많이 있습니다. [여기](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/concepts/plugins.md)에서 자세히 알아보세요.
+
+## Mode
+
+`mode` 매개 변수를 `development`, `production` 또는 `none`으로 설정하여 각 환경에 해당하는 webpack의 내장 최적화를 활성화 할 수 있습니다. 기본값은 `production`입니다.
+
+```javascript
+module.exports = {
+  mode: 'production'
+};
+```
+
+[여기](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/configuration/mode.md)에서 `mode` Configuration에 대해 자세히 알아보고 각 값에서 어떤 최적화가 수행되는지 알아보세요.
+
+## Browser Compatibility
+
+webpack은 [ES5를 준수](https://kangax.github.io/compat-table/es5/)하는 모든 브라우저를 지원합니다 (IE8 이하는 지원되지 않습니다). webpack은 [`import()`](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/guides/code-splitting.md#dynamic-imports) 및 [`require.ensure()`](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/guides/code-splitting.md#dynamic-imports)을 사용하려면 `Promise`가 필요합니다. 이전 브라우저를 지원하려면 이러한 표현식을 사용하기 전에 [polyfill을 로드](https://github.com/LeeKyuHyuk/webpack-korean-translation/blob/master/guides/shimming.md)해야 합니다.
+
+## Environment
+
+webpack 5는 Node.js 버전 10.13.0 이상에서 실행됩니다.
